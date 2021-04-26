@@ -4,15 +4,18 @@ export const changeBase = (value: number, base: number): string => {
     let exp = 0;
 
     let remainder = currentValue % Math.pow(base, exp + 1);
-    while (remainder !== 0) {
+    while (remainder !== currentValue) {
         result += `${remainder / Math.pow(base, exp)}`;
 
         exp += 1;
         currentValue -= remainder;
         remainder = currentValue % Math.pow(base, exp + 1);
     }
+    result += `${remainder / Math.pow(base, exp)}`;
 
-    return result;
+    return result.split('').reverse().join('');
 };
 
-console.log(changeBase(255, 7));
+// TODO: Add checks:
+// 1. value > base
+// 2. value and base are both integers
