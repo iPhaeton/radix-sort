@@ -2,7 +2,8 @@
   "name": "radix-sort",
   "version": "1.0.0",
   "description": "Radix sort",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "exec": "ts-node -r tsconfig-paths/register",
     "test": "jest '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$' --config jestconfig.json",
@@ -14,6 +15,10 @@
     "prepublishOnly": "npm run lint && npm run format && npm test",
     "postversion": "git push && git push --tags"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iPhaeton/radix-sort.git"
+},
   "keywords": [
     "radix",
     "sort",
