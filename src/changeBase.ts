@@ -1,3 +1,6 @@
+import { NonIntegerError } from './errors/NonInteger';
+import { isInteger } from './utils';
+
 export const changeBase = (value: number, base: number): number[] => {
     let currentValue = value;
     const result = [];
@@ -15,6 +18,14 @@ export const changeBase = (value: number, base: number): number[] => {
     return result;
 };
 
-// TODO: Add checks:
-// 1. value > base
-// 2. value and base are both integers
+export const changeBaseSafe = (
+    value: number,
+    base: number,
+    changeBaseFn: (v: number, b: number) => number[] = changeBase,
+): number[] => {
+    if (!isInteger(value) || !isInteger(base)) {
+        throw new NonIntegerError('Both value and base should be integers');
+    }
+
+    return changeBaseFn(value, base);
+};
