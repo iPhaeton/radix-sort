@@ -1,19 +1,18 @@
-export const changeBase = (value: number, base: number): string => {
+export const changeBase = (value: number, base: number): number[] => {
     let currentValue = value;
-    let result = '';
+    const result = [];
     let exp = 0;
 
     let remainder = currentValue % Math.pow(base, exp + 1);
     while (remainder !== currentValue) {
-        result += `${remainder / Math.pow(base, exp)}`;
+        result.push(remainder / Math.pow(base, exp));
 
         exp += 1;
         currentValue -= remainder;
         remainder = currentValue % Math.pow(base, exp + 1);
     }
-    result += `${remainder / Math.pow(base, exp)}`;
-
-    return result.split('').reverse().join('');
+    result.push(remainder / Math.pow(base, exp));
+    return result;
 };
 
 // TODO: Add checks:
