@@ -48,5 +48,9 @@
       "eslint --cache --fix --max-warnings 0",
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@types/ramda": "^0.27.40",
+    "ramda": "^0.27.1"
   }
 }
