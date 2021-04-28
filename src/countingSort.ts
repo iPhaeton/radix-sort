@@ -1,9 +1,9 @@
 import { ExtendArrayParameters } from './types';
 import { pipe } from 'ramda';
 
-const getBlankFromArray = <T>(array: T[], inPlace: boolean): T[] => (inPlace ? array : [...array]);
+export const getBlankFromArray = <T>(array: T[], inPlace: boolean): T[] => (inPlace ? array : [...array]);
 
-const extendArray = <T>({ array, length, value, inPlace = true }: ExtendArrayParameters<T>): T[] => {
+export const extendArray = <T>({ array, length, value, inPlace = true }: ExtendArrayParameters<T>): T[] => {
     const result = getBlankFromArray(array, inPlace);
     while (result.length < length) {
         result.push(value);
@@ -11,7 +11,7 @@ const extendArray = <T>({ array, length, value, inPlace = true }: ExtendArrayPar
     return result;
 };
 
-const countKeys = <T>(array: [number, T][]): number[] => {
+export const countKeys = <T>(array: [number, T][]): number[] => {
     const counts: number[] = [];
     for (const [key] of array) {
         if (counts[key] === undefined) {
@@ -22,21 +22,17 @@ const countKeys = <T>(array: [number, T][]): number[] => {
     return counts;
 };
 
-const calculatePositions = (counts: number[], inPlace = true): number[] => {
+export const calculatePositions = (length: number) => (counts: number[], inPlace = true): number[] => {
     const result = getBlankFromArray(counts, inPlace);
-    let addedCount = result[0];
-    result[0] = 0;
-    for (let key = 1; key < counts.length; key++) {
-        const currentAddedCount = result[key];
-        result[key] = result[key - 1] + addedCount;
-        addedCount = currentAddedCount;
+    result.push(length);
+    for (let key = result.length - 2; key >= 0; key--) {
+        result[key] = result[key + 1] - result[key];
     }
     return result;
 };
 
 export const countingSort = <T>(array: [number, T][]): [number, T][] => {
-    const positions = pipe<[number, T][], number[], number[]>(countKeys, calculatePositions)(array);
-    console.log(positions);
+    const positions = pipe<[number, T][], number[], number[]>(countKeys, calculatePositions(array.length))(array);
 
     const sorted: [number, T][] = [];
     for (const [key, value] of array) {
