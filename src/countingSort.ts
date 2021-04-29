@@ -1,5 +1,5 @@
 import { ExtendArrayParameters } from './types';
-import { pipe } from 'ramda';
+import { pipe, sum } from 'ramda';
 
 export const getBlankFromArray = <T>(array: T[], inPlace: boolean): T[] => (inPlace ? array : [...array]);
 
@@ -22,17 +22,19 @@ export const countKeys = <T>(array: [number, T][]): number[] => {
     return counts;
 };
 
-export const calculatePositions = (length: number) => (counts: number[], inPlace = true): number[] => {
+export const calculatePositionsFromCounts = (counts: number[], inPlace = true): number[] => {
     const result = getBlankFromArray(counts, inPlace);
-    result.push(length);
+    result.push(sum(counts));
     for (let key = result.length - 2; key >= 0; key--) {
         result[key] = result[key + 1] - result[key];
     }
     return result;
 };
 
+export const calculatePositions = pipe<[number, any][], number[], number[]>(countKeys, calculatePositionsFromCounts);
+
 export const countingSort = <T>(array: [number, T][]): [number, T][] => {
-    const positions = pipe<[number, T][], number[], number[]>(countKeys, calculatePositions(array.length))(array);
+    const positions = calculatePositions(array);
 
     const sorted: [number, T][] = [];
     for (const [key, value] of array) {
@@ -45,16 +47,16 @@ export const countingSort = <T>(array: [number, T][]): [number, T][] => {
     return sorted;
 };
 
-console.log(
-    countingSort([
-        [1, 1],
-        [3, 3],
-        [2, 2],
-        [8, 8],
-        [10, 10],
-        [5, 5],
-        [3, 33],
-        [8, 88],
-        [0, 111],
-    ]),
-);
+// console.log(
+//     countingSort([
+//         [1, 1],
+//         [3, 3],
+//         [2, 2],
+//         [8, 8],
+//         [10, 10],
+//         [5, 5],
+//         [3, 33],
+//         [8, 88],
+//         [0, 111],
+//     ]),
+// );
