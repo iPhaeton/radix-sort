@@ -8,8 +8,11 @@
         "strict": true,
         "experimentalDecorators": true,
         "noUnusedLocals": true,
-        "noUnusedParameters": true,
+        "noUnusedParameters": true
     },
     "include": ["src"],
-    "exclude": ["node_modules", "./src/__tests__"]
+    "exclude": ["node_modules", "./src/__tests__"],
+    "ts-node": {
+        "files": true
+    }
 }
