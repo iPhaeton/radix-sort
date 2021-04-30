@@ -4,10 +4,13 @@ import { CountingElement, RadixData, RadixElement } from './types';
 
 export const getBase = (array: any[]): number => array.length;
 
-const createSplitKey = <T>(base: number): ((a: CountingElement<T>[]) => RadixElement<T>[]) =>
-    map(([key, value]: CountingElement<T>) => [changeBase(key, base), value]);
+export const createSplitKey = <T>(
+    base: number,
+    changeBaseFn = changeBase,
+): ((a: CountingElement<T>[]) => RadixElement<T>[]) =>
+    map(([key, value]: CountingElement<T>) => [changeBaseFn(key, base), value]);
 
-const accFn = <T>(res: RadixData<T>, element: RadixElement<T>): RadixData<T> => {
+export const radixDataAccFn = <T>(res: RadixData<T>, element: RadixElement<T>): RadixData<T> => {
     res.array.push(element);
     if (element[0].length > res.iterCount) {
         res.iterCount = element[0].length;
@@ -15,16 +18,23 @@ const accFn = <T>(res: RadixData<T>, element: RadixElement<T>): RadixData<T> => 
     return res;
 };
 
-const createPrepareArray = <T>(base: number) =>
+export const createPrepareRadixData = <T>(base: number): ((a: CountingElement<T>[]) => RadixData<T>) =>
     transduce<CountingElement<T>, RadixElement<T>, RadixData<T>>(
         // prettier-ignore
         createSplitKey(base),
-        accFn,
+        radixDataAccFn,
         { array: [], iterCount: 0 },
     );
 
+const ppp = createPrepareRadixData<number>(12);
+ppp([
+    [12413, 543],
+    [876, 98],
+    [5678, 789],
+]);
+
 console.log(
-    createPrepareArray<number>(3)([
+    createPrepareRadixData<number>(12)([
         [12413, 543],
         [876, 98],
         [5678, 789],
