@@ -1,5 +1,6 @@
 import { map, transduce } from 'ramda';
 import { changeBase } from './changeBase';
+import { countingSort } from './countingSort';
 import { CountingElement, RadixData, RadixElement } from './types';
 
 export const getBase = (array: any[]): number => array.length;
@@ -26,22 +27,16 @@ export const createPrepareRadixData = <T>(base: number): ((a: CountingElement<T>
         { array: [], iterCount: 0 },
     );
 
-const ppp = createPrepareRadixData<number>(12);
-ppp([
-    [12413, 543],
-    [876, 98],
-    [5678, 789],
-]);
+export const radixSort = <T>(array: CountingElement<T>[]): RadixElement<T>[] => {
+    const prepareRadixData = createPrepareRadixData<T>(array.length);
+    const radixData = prepareRadixData(array);
+    let radixArray = radixData.array;
+    const iterCount = radixData.iterCount;
 
-console.log(
-    createPrepareRadixData<number>(12)([
-        [12413, 543],
-        [876, 98],
-        [5678, 789],
-    ]).array,
-);
+    for (let i = 0; i < iterCount; i++) {
+        const getKey = (key: number[]) => key[i] || 0;
+        radixArray = countingSort(radixArray, getKey);
+    }
 
-// export const radixSort = <T>(array: [number, T][]): [number, T][] => {
-//     const base = getBase(array);
-//     const max = getMax(array);
-// };
+    return radixArray;
+};

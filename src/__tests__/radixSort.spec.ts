@@ -1,4 +1,4 @@
-import { createSplitKey, getBase, createPrepareRadixData } from '../radixSort';
+import { createSplitKey, getBase, createPrepareRadixData, radixSort } from '../radixSort';
 
 describe('getBase', () => {
     it('should return length of an array', () => {
@@ -41,5 +41,23 @@ describe('createPrepareRadixData', () => {
             ],
             iterCount: 4,
         });
+    });
+});
+
+describe('radixSort', () => {
+    it('should sort and array', () => {
+        expect(
+            radixSort<number>([
+                [12413, 543],
+                [876, 98],
+                [876, 99],
+                [5678, 789],
+            ]),
+        ).toEqual([
+            [[0, 3, 2, 1, 3], 98],
+            [[0, 3, 2, 1, 3], 99],
+            [[2, 3, 2, 0, 2, 1, 1], 789],
+            [[1, 3, 3, 1, 0, 0, 3], 543],
+        ]);
     });
 });
