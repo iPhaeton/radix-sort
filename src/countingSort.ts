@@ -11,13 +11,14 @@ export const extendArray = <T>({ array, length, value, inPlace = true }: ExtendA
     return result;
 };
 
-export const countKeys = <T>(array: [number, T][]): number[] => {
+export const countKeys = <T, K>(getKey: (k: K) => number) => (array: [K, T][]): number[] => {
     const counts: number[] = [];
     for (const [key] of array) {
-        if (counts[key] === undefined) {
-            extendArray<number>({ array: counts, length: key + 1, value: 0 });
+        const numericKey = getKey(key);
+        if (counts[numericKey] === undefined) {
+            extendArray<number>({ array: counts, length: numericKey + 1, value: 0 });
         }
-        ++counts[key];
+        ++counts[numericKey];
     }
     return counts;
 };
@@ -31,18 +32,21 @@ export const calculatePositionsFromCounts = (counts: number[], inPlace = true): 
     return result;
 };
 
-export const calculatePositions = pipe<[number, any][], number[], number[]>(countKeys, calculatePositionsFromCounts);
+export const createCalculatePositions = <T, K>(getKey: (k: K) => number): ((a: [K, T][]) => number[]) =>
+    pipe<[K, T][], number[], number[]>(countKeys<T, K>(getKey), calculatePositionsFromCounts);
 
-export const countingSort = <T>(array: [number, T][]): [number, T][] => {
+export const countingSort = <T, K = number>(array: [K, T][], getKey: (k: K) => number): [number, T][] => {
+    const calculatePositions = createCalculatePositions(getKey);
     const positions = calculatePositions(array);
 
     const sorted: [number, T][] = [];
     for (const [key, value] of array) {
-        if (sorted[positions[key]] === undefined) {
-            extendArray({ array: sorted, length: positions[key] + 1, value: null });
+        const numericKey = getKey(key);
+        if (sorted[positions[numericKey]] === undefined) {
+            extendArray({ array: sorted, length: positions[numericKey] + 1, value: null });
         }
-        sorted[positions[key]] = [key, value];
-        ++positions[key];
+        sorted[positions[numericKey]] = [numericKey, value];
+        ++positions[numericKey];
     }
     return sorted;
 };

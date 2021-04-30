@@ -1,3 +1,4 @@
+import { identity } from 'ramda';
 import { getBlankFromArray, extendArray, countKeys, calculatePositionsFromCounts, countingSort } from '../countingSort';
 
 describe('getBlankFromArray', () => {
@@ -53,7 +54,7 @@ describe('countKeys', () => {
     });
 
     it('should count keys in an array', () => {
-        expect(countKeys(array)).toEqual([1, 1, 1, 2, 0, 1, 0, 0, 3]);
+        expect(countKeys<number, number>(identity)(array)).toEqual([1, 1, 1, 2, 0, 1, 0, 0, 3]);
     });
 });
 
@@ -93,7 +94,7 @@ describe('countingSort', () => {
     });
 
     it('should sort an array according to its keys and not mutate the original array', () => {
-        const sorted = countingSort(array);
+        const sorted = countingSort(array, identity);
         expect(sorted).toEqual([
             [0, 111],
             [1, 1],
