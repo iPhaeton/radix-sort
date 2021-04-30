@@ -24,11 +24,11 @@ const accFn = <T>(res: PreparedArray<T>, element: [number[], T]): PreparedArray<
 };
 
 const createPrepareArray = <T>(base: number) =>
-    transduce<[number, T], PreparedArray<T>>(
+    transduce<[number, T], [number[], T], PreparedArray<T>>(
         // prettier-ignore
-        createSplitKey(base) as any,
-        accFn as any,
-        { array: [], iterCount: 0 } as any,
+        createSplitKey(base),
+        accFn,
+        { array: [], iterCount: 0 },
     );
 
 console.log(
