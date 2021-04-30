@@ -1,21 +1,13 @@
 import { map, transduce } from 'ramda';
 import { changeBase } from './changeBase';
+import { CountingElement, RadixData, RadixElement } from './types';
 
 export const getBase = (array: any[]): number => array.length;
 
-// export const getMax = (res: number, current: [number, any]) => (current[0] > res ? current[0] : res);
+const createSplitKey = <T>(base: number): ((a: CountingElement<T>[]) => RadixElement<T>[]) =>
+    map(([key, value]: CountingElement<T>) => [changeBase(key, base), value]);
 
-// const getMax = reduce((res: number, current: [number, any]) => (current[0] > res ? current[0] : res), 0);
-
-interface PreparedArray<T> {
-    array: [number[], T][];
-    iterCount: number;
-}
-
-const createSplitKey = <T>(base: number): ((a: [number, T][]) => [number[], T][]) =>
-    map(([key, value]: [number, T]) => [changeBase(key, base), value]);
-
-const accFn = <T>(res: PreparedArray<T>, element: [number[], T]): PreparedArray<T> => {
+const accFn = <T>(res: RadixData<T>, element: RadixElement<T>): RadixData<T> => {
     res.array.push(element);
     if (element[0].length > res.iterCount) {
         res.iterCount = element[0].length;
@@ -24,7 +16,7 @@ const accFn = <T>(res: PreparedArray<T>, element: [number[], T]): PreparedArray<
 };
 
 const createPrepareArray = <T>(base: number) =>
-    transduce<[number, T], [number[], T], PreparedArray<T>>(
+    transduce<CountingElement<T>, RadixElement<T>, RadixData<T>>(
         // prettier-ignore
         createSplitKey(base),
         accFn,

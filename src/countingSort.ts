@@ -1,4 +1,4 @@
-import { ExtendArrayParameters } from './types';
+import { CountingElement, ExtendArrayParameters } from './types';
 import { pipe, sum } from 'ramda';
 
 export const getBlankFromArray = <T>(array: T[], inPlace: boolean): T[] => (inPlace ? array : [...array]);
@@ -35,11 +35,11 @@ export const calculatePositionsFromCounts = (counts: number[], inPlace = true): 
 export const createCalculatePositions = <T, K>(getKey: (k: K) => number): ((a: [K, T][]) => number[]) =>
     pipe<[K, T][], number[], number[]>(countKeys<T, K>(getKey), calculatePositionsFromCounts);
 
-export const countingSort = <T, K = number>(array: [K, T][], getKey: (k: K) => number): [number, T][] => {
+export const countingSort = <T, K = number>(array: [K, T][], getKey: (k: K) => number): CountingElement<T>[] => {
     const calculatePositions = createCalculatePositions(getKey);
     const positions = calculatePositions(array);
 
-    const sorted: [number, T][] = [];
+    const sorted: CountingElement<T>[] = [];
     for (const [key, value] of array) {
         const numericKey = getKey(key);
         if (sorted[positions[numericKey]] === undefined) {
